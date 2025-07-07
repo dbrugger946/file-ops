@@ -3,6 +3,7 @@ import shutil
 import argparse
 import sys
 
+from docx2pdf import convert
 
 
 def copy_files_to_single_folder(source_directory, target_directory):
@@ -29,7 +30,13 @@ def copy_files_to_single_folder(source_directory, target_directory):
                 init_base, init_ext = os.path.splitext(file)
                 if init_ext == ".docx" or init_ext == ".pdf":                    
                     try:
-                        shutil.copy(source_path, target_path)
+                        # if .docx then convert to .pdf and save to target location
+                        if init_ext == ".docx":
+                            target_path = target_directory + init_base + ".pdf"
+                            convert(source_path,target_path)
+                            print(f"--------- {target_path}")
+                        else: 
+                            shutil.copy(source_path, target_path)
                         copied_count += 1
                         print(f"copied {copied_count} :{source_path} to {target_path}\n")
                     except Exception as e:
