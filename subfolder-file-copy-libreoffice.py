@@ -1,9 +1,25 @@
 import os
+import subprocess
 import shutil
 import argparse
 import sys
 
-from docx2pdf import convert
+
+def convert_file_to_pdf(file_path, output_dir):
+    subprocess.run(
+        f'flatpak run org.libreoffice.LibreOffice \
+        --headless \
+        --convert-to pdf \
+        --outdir "{output_dir}" "{file_path}"', shell=True)
+    
+    print(f"*** Convert inputs: {output_dir} {file_path}" )
+    
+    pdf_file_path = f'{output_dir}{file_path.rsplit("/", 1)[1].split(".")[0]}.pdf'
+    
+    if os.path.exists(pdf_file_path):
+        return pdf_file_path
+    else:
+        return None
 
 
 def copy_files_to_single_folder(source_directory, target_directory):
@@ -32,9 +48,9 @@ def copy_files_to_single_folder(source_directory, target_directory):
                     try:
                         # if .docx then convert to .pdf and save to target location
                         if init_ext == ".docx":
-                            target_path = target_directory + init_base + ".pdf"
-                            convert(source_path,target_path)
-                            print(f"--------- {target_path}")
+                            # shutil.copy(source_path, target_path)
+                            pdf_file = convert_file_to_pdf(source_path,target_directory)
+                            # print(f"--------- {pdf_file}")
                         else: 
                             shutil.copy(source_path, target_path)
                         copied_count += 1

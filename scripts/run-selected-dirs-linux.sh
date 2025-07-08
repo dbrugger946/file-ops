@@ -14,8 +14,10 @@ echo "***********************************************"
 
     
 while read -r sub_dir_name; do
-    # echo $dir_name
-    # echo $base_dir
-    python ../subfolder-file-copy.py $base_dir"/Engagements/"$sub_dir_name $base_dir"/consolidated-files/"$sub_dir_name           
+    
+    # python ../argview.py "$base_dir/Engagements/$sub_dir_name" $base_dir"/consolidated-files/$sub_dir_name" 
+    
+    python ../subfolder-file-copy-libreoffice.py "$base_dir/Engagements/$sub_dir_name" $base_dir"/consolidated-files/$sub_dir_name"     
+
 done < $input_file
 
