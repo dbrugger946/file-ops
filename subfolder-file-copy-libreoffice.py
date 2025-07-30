@@ -6,15 +6,20 @@ import sys
 
 
 def convert_file_to_pdf(file_path, output_dir):
+    """ This function calls libreoffice directly in the linux env
+    and converts docx files into pdfs, and puts the new pdfs in the target  
+    or consolidated directory"""
     subprocess.run(
         f'flatpak run org.libreoffice.LibreOffice \
         --headless \
         --convert-to pdf \
         --outdir "{output_dir}" "{file_path}"', shell=True)
     
-    print(f"*** Convert inputs: {output_dir} {file_path}" )
+    # print(f"*** Convert inputs: {output_dir} {file_path}" )
     
-    pdf_file_path = f'{output_dir}{file_path.rsplit("/", 1)[1].split(".")[0]}.pdf'
+    pdf_file_path = f'{output_dir}/{file_path.rsplit("/", 1)[1].split(".")[0]}.pdf'
+
+    # print(f"=====: {pdf_file_path}")
     
     if os.path.exists(pdf_file_path):
         return pdf_file_path
@@ -46,15 +51,17 @@ def copy_files_to_single_folder(source_directory, target_directory):
                 init_base, init_ext = os.path.splitext(file)
                 if init_ext == ".docx" or init_ext == ".pdf":                    
                     try:
+                        copied_count += 1
                         # if .docx then convert to .pdf and save to target location
                         if init_ext == ".docx":
-                            # shutil.copy(source_path, target_path)
+                            # the conversion function also puts the new pdf in the target directory
                             pdf_file = convert_file_to_pdf(source_path,target_directory)
                             # print(f"--------- {pdf_file}")
+                            print(f">>Copied {copied_count} :{source_path} >>> {pdf_file}\n")
                         else: 
+                            # source file is a pdf and it is just copied to target directory
                             shutil.copy(source_path, target_path)
-                        copied_count += 1
-                        print(f"copied {copied_count} :{source_path} to {target_path}\n")
+                            print(f">>Copied: {copied_count} :{source_path} >>> {target_path}\n")
                     except Exception as e:
                         print(f"****** Error copying {source_path}: {e}")
 
