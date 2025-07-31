@@ -3,23 +3,47 @@ import subprocess
 import shutil
 import argparse
 import sys
+import logging
+
+# Create and configure logger
+logging.basicConfig(filename="conversion.log",
+                    format='%(asctime)s %(message)s',
+                    filemode='w')
+
+# Creating an object
+logger = logging.getLogger()
+
+# Setting the threshold of logger to DEBUG
+logger.setLevel(logging.DEBUG)
 
 
 def convert_file_to_pdf(file_path, output_dir):
     """ This function calls libreoffice directly in the linux env
     and converts docx files into pdfs, and puts the new pdfs in the target  
     or consolidated directory"""
-    subprocess.run(
-        f'flatpak run org.libreoffice.LibreOffice \
-        --headless \
-        --convert-to pdf \
-        --outdir "{output_dir}" "{file_path}"', shell=True)
-    
-    # print(f"*** Convert inputs: {output_dir} {file_path}" )
+
+    try:
+        result = subprocess.run(
+            f'flatpak run org.libreoffice.LibreOffice \
+            --headless \
+            --convert-to pdf \
+            --outdir "{output_dir}" "{file_path}"', capture_output=True, text=True, shell=True, check=False)
+        
+        logging.info(f"Command executed successfully: {result.args}")
+        logging.info(f"Stdout:\n{result.stdout}")
+        if result.stderr:
+            logging.warning(f"Stderr:\n{result.stderr}")
+    except subprocess.CalledProcessError as e:
+        logging.error(f"Command failed: {e.args}")
+        logging.error(f"Stderr:\n{e.stderr}")
+    except FileNotFoundError:
+        logging.error("Command not found. Check if the executable is in your PATH.")
+
+    logger.debug(f"*** Convert input {output_dir} {file_path}" )
     
     pdf_file_path = f'{output_dir}/{file_path.rsplit("/", 1)[1].split(".")[0]}.pdf'
 
-    # print(f"=====: {pdf_file_path}")
+    logger.debug(f"=====: {pdf_file_path}")
     
     if os.path.exists(pdf_file_path):
         return pdf_file_path
@@ -45,27 +69,29 @@ def copy_files_to_single_folder(source_directory, target_directory):
 
             # only work with West accounts for now
             if  "West" in root:
-                # print(f" \t\t >>>>>{root} <<<")
+                logger.debug(f" \t\t >>>>>{root} <<<")
 
                 # for now only grab certain types of files
                 init_base, init_ext = os.path.splitext(file)
                 if init_ext == ".docx" or init_ext == ".pdf":                    
                     try:
                         copied_count += 1
+                        print(f"Current Sub Directory File Count: {copied_count}")
                         # if .docx then convert to .pdf and save to target location
                         if init_ext == ".docx":
                             # the conversion function also puts the new pdf in the target directory
                             pdf_file = convert_file_to_pdf(source_path,target_directory)
-                            # print(f"--------- {pdf_file}")
-                            print(f">>Copied {copied_count} :{source_path} >>> {pdf_file}\n")
+                            logger.debug(f"--------- {pdf_file}")
+                            logger.debug(f">>Copied {copied_count} :{source_path} >>> {pdf_file}\n")
                         else: 
                             # source file is a pdf and it is just copied to target directory
                             shutil.copy(source_path, target_path)
-                            print(f">>Copied: {copied_count} :{source_path} >>> {target_path}\n")
+                            logger.debug(f">>Copied: {copied_count} :{source_path} >>> {target_path}\n")
                     except Exception as e:
-                        print(f"****** Error copying {source_path}: {e}")
+                        logger.debug(f"****** Error copying {source_path}: {e}")
 
-    print(f"Final Copied File Count: {copied_count}")
+    logger.debug(f"Final Converted and Copied File Count: {copied_count}")
+    print(f"Final Converted and Copied File Count: {copied_count}")
 
 
 if __name__ == "__main__":
@@ -75,8 +101,8 @@ if __name__ == "__main__":
     parser.add_argument("target_folder", help="The single target folder for all the files")
 
     if (len(sys.argv) == 1 or len(sys.argv) == 2):
-        print("2 arguments are required")
-        parser.print_help()
+        logger.debug("2 arguments are required")
+        parser.logger.debug_help()
         sys.exit(0)
     else:
         args = parser.parse_args()
@@ -85,4 +111,4 @@ if __name__ == "__main__":
     target_folder = args.target_folder
 
     copy_files_to_single_folder(source_folder, target_folder)
-    print("------------- File consolidation completed.\n\n")
+    logger.debug("------------- File consolidation completed.\n\n")
