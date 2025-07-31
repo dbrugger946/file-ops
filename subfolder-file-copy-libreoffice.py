@@ -29,8 +29,8 @@ def convert_file_to_pdf(file_path, output_dir):
             --convert-to pdf \
             --outdir "{output_dir}" "{file_path}"', capture_output=True, text=True, shell=True, check=False)
         
-        logging.info(f"Command executed successfully: {result.args}")
-        logging.info(f"Stdout:\n{result.stdout}")
+        logging.debug(f"Command executed successfully: {result.args}")
+        logging.debug(f"Stdout:\n{result.stdout}")
         if result.stderr:
             logging.warning(f"Stderr:\n{result.stderr}")
     except subprocess.CalledProcessError as e:
