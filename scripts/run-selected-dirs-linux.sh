@@ -11,7 +11,8 @@ echo "***********************************************"
 # may want to override base_dir
 # base_dir=/Users/dbrugger/projects2/notebooklm
 # also, may want to paramaterize source and destination subfolders
-# example run :  (file-ops) user1@matros:~/projects/file-ops/scripts$ ./run-selected-dirs-linux.sh ./dirs.txt /home/user1/projects/notebooklm/Engagements-20250707T152647Z-1-001
+# example run :  (file-ops) user1@matros:~/projects/file-ops/scripts$ 
+# ./run-selected-dirs-linux.sh ./dirs.txt /home/user1/projects/notebooklm/Engagements-20250707T152647Z-1-001
 
     
 while read -r sub_dir_name; do

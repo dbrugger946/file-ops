@@ -1,1 +1,1 @@
-Red Hat OpenShift on AWS (ROSA)
+OpenShift (Self-managed)
