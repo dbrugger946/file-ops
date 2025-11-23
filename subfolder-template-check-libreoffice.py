@@ -22,7 +22,7 @@ logger.setLevel(logging.DEBUG)
 csv_file = open("csv-file-tracker.csv", 'w', newline='')
 csv_writer = csv.writer(csv_file)
 # Writing a header row
-csv_writer.writerow(['Account Folder', 'FileName', 'size'])
+csv_writer.writerow(['Sales Region', 'Account Folder', 'Downloaded (docx) FileName', 'size (kb)', 'pdf version link'])
 
 
 def convert_file_to_pdf(file_path, output_dir):
@@ -93,10 +93,15 @@ def copy_files_to_single_folder(source_directory, target_directory):
                             logger.debug(f">>Copied {copied_count} :{source_path} >>> {pdf_file}\n")
 
                             if "After Action Report" in init_base :          
-                                file_size = os.path.getsize(source_path)
+                                file_size_bytes = os.path.getsize(source_path)
+                                file_size_kb = file_size_bytes / 1024
                                 subdirname = os.path.basename(root)
-                                print(f" {subdirname} {file} {file_size}") 
-                                csv_writer.writerow([subdirname,file,file_size])
+                                # no_quotes_subdir = subdirname.replace('\"','')
+                                no_quotes_subdir = subdirname.strip('\"')
+                                sales_region = no_quotes_subdir.split("-")[0]
+                                # print(f" {no_quotes_subdir} {file} {file_size}") 
+                                # print(sales_region)
+                                csv_writer.writerow([sales_region,no_quotes_subdir,file,round(file_size_kb,2),pdf_file])
 
                         else: 
                             # source file is a pdf and it is just copied to target directory
