@@ -1,7 +1,10 @@
 
 
 conversion.log
-*.csv 
+*.csv
+*.xlsx
+*.ods
+*.xls 
 
 .DS_Store
 

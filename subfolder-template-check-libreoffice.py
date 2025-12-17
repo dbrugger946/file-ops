@@ -19,6 +19,12 @@ logger = logging.getLogger()
 # Setting the threshold of logger to DEBUG
 logger.setLevel(logging.DEBUG)
 
+# Need to turn off logging at some point
+#
+# This will disable all logging calls with a severity level of CRITICAL or less
+# (effectively all standard logging)
+# logging.disable(logging.CRITICAL)
+
 # Create and open a csv file for tracking filtered files
 csv_file = open("csv-file-tracker.csv", 'w', newline='')
 csv_writer = csv.writer(csv_file)
