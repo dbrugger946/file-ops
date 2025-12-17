@@ -5,6 +5,7 @@ import argparse
 import sys
 import logging
 import csv
+from datetime import datetime
 
 # Create and configure logger
 logging.basicConfig(filename="conversion.log",
@@ -22,7 +23,7 @@ logger.setLevel(logging.DEBUG)
 csv_file = open("csv-file-tracker.csv", 'w', newline='')
 csv_writer = csv.writer(csv_file)
 # Writing a header row
-csv_writer.writerow(['Sales Region', 'Account Folder', 'Downloaded (docx) FileName', 'size (kb)', 'pdf version link'])
+csv_writer.writerow(['Sales Region', 'Account Folder', 'Downloaded (docx) FileName','creation date','modified date','size (kb)','Completion Level', 'pdf version link'])
 
 
 def convert_file_to_pdf(file_path, output_dir):
@@ -77,7 +78,7 @@ def copy_files_to_single_folder(source_directory, target_directory):
 
             # by default looks at all account subdirs across all regions, can be constrained
             if True:
-                logger.debug(f" \t\t >>>>>current "root": {root} <<<")
+                logger.debug(f" \t\t >>>>>current (root): {root} <<<")
 
                 # for now only grab certain types of files
                 init_base, init_ext = os.path.splitext(file)
@@ -92,8 +93,23 @@ def copy_files_to_single_folder(source_directory, target_directory):
                             logger.debug(f"--------- {pdf_file}")
                             logger.debug(f">>Copied {copied_count} :{source_path} >>> {pdf_file}\n")
 
-                            if "After Action Report" in init_base :          
+                            if "After Action Report" in init_base :  
+
+                                statinfo = os.stat(source_path)
+                                create_date = datetime.fromtimestamp(statinfo.st_ctime)
+                                modified_date = datetime.fromtimestamp(statinfo.st_mtime)
+
+
                                 file_size_bytes = os.path.getsize(source_path)
+                                aar_template_size = 129516
+                                completion_flag = '4: undertermined'
+                                if (aar_template_size + 100) >= file_size_bytes <= (aar_template_size + 400):
+                                    completion_flag = '2: possibly'
+                                elif (aar_template_size + 400 < file_size_bytes):
+                                    completion_flag = '3: likely'
+                                else:
+                                    completion_flag = '1: unlikely'
+
                                 file_size_kb = file_size_bytes / 1024
                                 subdirname = os.path.basename(root)
                                 # no_quotes_subdir = subdirname.replace('\"','')
@@ -101,7 +117,7 @@ def copy_files_to_single_folder(source_directory, target_directory):
                                 sales_region = no_quotes_subdir.split("-")[0]
                                 # print(f" {no_quotes_subdir} {file} {file_size}") 
                                 # print(sales_region)
-                                csv_writer.writerow([sales_region,no_quotes_subdir,file,round(file_size_kb,2),pdf_file])
+                                csv_writer.writerow([sales_region,no_quotes_subdir,file,create_date.date(),modified_date.date(), round(file_size_kb,2), completion_flag, pdf_file])
 
                         else: 
                             # source file is a pdf and it is just copied to target directory

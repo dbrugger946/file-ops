@@ -1,6 +1,7 @@
 
 
 conversion.log
+*.csv 
 
 .DS_Store
 
