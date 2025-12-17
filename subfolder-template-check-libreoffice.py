@@ -77,7 +77,7 @@ def copy_files_to_single_folder(source_directory, target_directory):
 
             # by default looks at all account subdirs across all regions, can be constrained
             if True:
-                logger.debug(f" \t\t >>>>>{root} <<<")
+                logger.debug(f" \t\t >>>>>current "root": {root} <<<")
 
                 # for now only grab certain types of files
                 init_base, init_ext = os.path.splitext(file)
