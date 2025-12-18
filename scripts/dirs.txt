@@ -6,3 +6,4 @@ OpenShift Dedicated (OSD)
 Other
 Red Hat Enterprise Linux (RHEL)
 Red Hat OpenShift on AWS (ROSA)
+Developer Experience

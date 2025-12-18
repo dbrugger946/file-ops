@@ -13,7 +13,7 @@ echo "***********************************************"
 # also, may want to paramaterize source and destination subfolders
 
 # example run :  (file-ops) user1@matros:~/projects/file-ops/scripts$ 
-# ./run-subfolder-template-check.sh ./dirs.txt /home/user1/projects/notebooklm/Engagements-20251118T173449Z-1-001
+# ./run-subfolder-template-check.sh ./dirs.txt /home/user1/projects/notebooklm/Engagements-20251218T125736Z-1-001
 
     
 while read -r sub_dir_name; do

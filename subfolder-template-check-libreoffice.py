@@ -23,13 +23,13 @@ logger.setLevel(logging.DEBUG)
 #
 # This will disable all logging calls with a severity level of CRITICAL or less
 # (effectively all standard logging)
-# logging.disable(logging.CRITICAL)
+logging.disable(logging.CRITICAL)
 
 # Create and open a csv file for tracking filtered files
-csv_file = open("csv-file-tracker.csv", 'w', newline='')
+csv_file = open("file-tracker.csv", 'a', newline='')
 csv_writer = csv.writer(csv_file)
 # Writing a header row
-csv_writer.writerow(['Sales Region', 'Account Folder', 'Downloaded (docx) FileName','creation date','modified date','size (kb)','Completion Level', 'pdf version link'])
+csv_writer.writerow(['Sales Region','Product Group', 'Account Folder', 'Downloaded (docx) FileName','Creation Date','Modified Date','Size (kb)','Completion Level', 'pdf version link'])
 
 
 def convert_file_to_pdf(file_path, output_dir):
@@ -76,6 +76,10 @@ def copy_files_to_single_folder(source_directory, target_directory):
     if not os.path.exists(target_directory):
         os.makedirs(target_directory)
 
+    # Pull out the product name/group from directory path passed
+    product_group = os.path.basename(source_directory)
+    product_group = product_group.strip('\"')
+
     copied_count = 0
     for root, _, files in os.walk(source_directory):
         for file in files:
@@ -117,13 +121,18 @@ def copy_files_to_single_folder(source_directory, target_directory):
                                     completion_flag = '1: unlikely'
 
                                 file_size_kb = file_size_bytes / 1024
+
+                                # Pull out the customer/account name
                                 subdirname = os.path.basename(root)
                                 # no_quotes_subdir = subdirname.replace('\"','')
                                 no_quotes_subdir = subdirname.strip('\"')
                                 sales_region = no_quotes_subdir.split("-")[0]
                                 # print(f" {no_quotes_subdir} {file} {file_size}") 
                                 # print(sales_region)
-                                csv_writer.writerow([sales_region,no_quotes_subdir,file,create_date.date(),modified_date.date(), round(file_size_kb,2), completion_flag, pdf_file])
+
+
+
+                                csv_writer.writerow([sales_region,product_group,no_quotes_subdir,file,create_date.date(),modified_date.date(), round(file_size_kb,2), completion_flag, pdf_file])
 
                         else: 
                             # source file is a pdf and it is just copied to target directory
