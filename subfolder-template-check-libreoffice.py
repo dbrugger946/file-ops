@@ -29,7 +29,7 @@ logging.disable(logging.CRITICAL)
 csv_file = open("file-tracker.csv", 'a', newline='')
 csv_writer = csv.writer(csv_file)
 # Writing a header row
-csv_writer.writerow(['Sales Region','Product Group', 'Account Folder', 'Downloaded (docx) FileName','Creation Date','Modified Date','Size (kb)','Completion Level', 'pdf version link'])
+csv_writer.writerow(['Sales Region','Product Group', 'Account Folder', 'Downloaded (docx) FileName','Creation Date','Modified Date','Size (bytes)','Size (kb)','Completion Level', 'pdf version link'])
 
 
 def convert_file_to_pdf(file_path, output_dir):
@@ -113,7 +113,7 @@ def copy_files_to_single_folder(source_directory, target_directory):
                                 file_size_bytes = os.path.getsize(source_path)
                                 aar_template_size = 129516
                                 completion_flag = '4: undertermined'
-                                if (aar_template_size + 100) >= file_size_bytes <= (aar_template_size + 400):
+                                if (aar_template_size + 100) <= file_size_bytes <= (aar_template_size + 400):
                                     completion_flag = '2: possibly'
                                 elif (aar_template_size + 400 < file_size_bytes):
                                     completion_flag = '3: likely'
@@ -132,7 +132,7 @@ def copy_files_to_single_folder(source_directory, target_directory):
 
 
 
-                                csv_writer.writerow([sales_region,product_group,no_quotes_subdir,file,create_date.date(),modified_date.date(), round(file_size_kb,2), completion_flag, pdf_file])
+                                csv_writer.writerow([sales_region,product_group,no_quotes_subdir,file,create_date.date(),modified_date.date(), file_size_bytes, round(file_size_kb,2), completion_flag, pdf_file])
 
                         else: 
                             # source file is a pdf and it is just copied to target directory
