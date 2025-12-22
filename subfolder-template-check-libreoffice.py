@@ -80,6 +80,11 @@ def copy_files_to_single_folder(source_directory, target_directory):
     product_group = os.path.basename(source_directory)
     product_group = product_group.strip('\"')
 
+    # establish the base consolidated dir 
+    # single directory to put filtered files in  I.E.  AAR's that are actually filled out 
+    base_dir_consolidated, product_subdir = os.path.split(target_directory)
+    
+
     copied_count = 0
     for root, _, files in os.walk(source_directory):
         for file in files:
@@ -120,6 +125,11 @@ def copy_files_to_single_folder(source_directory, target_directory):
                                 else:
                                     completion_flag = '1: unlikely'
 
+                                # copy filtered "completed files" into a single directory
+                                if (completion_flag == '2: possibly') or (completion_flag == '3: likely'):
+                                    shutil.copy(pdf_file,base_dir_consolidated)
+                                
+
                                 file_size_kb = file_size_bytes / 1024
 
                                 # Pull out the customer/account name
@@ -127,10 +137,6 @@ def copy_files_to_single_folder(source_directory, target_directory):
                                 # no_quotes_subdir = subdirname.replace('\"','')
                                 no_quotes_subdir = subdirname.strip('\"')
                                 sales_region = no_quotes_subdir.split("-")[0]
-                                # print(f" {no_quotes_subdir} {file} {file_size}") 
-                                # print(sales_region)
-
-
 
                                 csv_writer.writerow([sales_region,product_group,no_quotes_subdir,file,create_date.date(),modified_date.date(), file_size_bytes, round(file_size_kb,2), completion_flag, pdf_file])
 
