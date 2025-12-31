@@ -5,6 +5,7 @@ import argparse
 import sys
 import logging
 import csv
+import urllib.parse
 from datetime import datetime
 
 # Create and configure logger
@@ -26,7 +27,7 @@ logger.setLevel(logging.DEBUG)
 logging.disable(logging.CRITICAL)
 
 # Create and open a csv file for tracking filtered files
-csv_file = open("file-tracker.csv", 'a', newline='')
+csv_file = open("../reports/file-tracker.csv", 'a', newline='',  encoding='utf-8')
 csv_writer = csv.writer(csv_file)
 # Writing a header row
 csv_writer.writerow(['Sales Region','Product Group', 'Account Folder', 'Downloaded (docx) FileName','Creation Date','Modified Date','Size (bytes)','Size (kb)','Completion Level', 'pdf version link'])
@@ -108,6 +109,8 @@ def copy_files_to_single_folder(source_directory, target_directory):
                             logger.debug(f"--------- {pdf_file}")
                             logger.debug(f">>Copied {copied_count} :{source_path} >>> {pdf_file}\n")
 
+                            # focus is AAR docx files, categorize level of comppletness via size, pull metadata info
+                            # create csv file with collected data
                             if "After Action Report" in init_base :  
 
                                 statinfo = os.stat(source_path)
@@ -138,7 +141,13 @@ def copy_files_to_single_folder(source_directory, target_directory):
                                 no_quotes_subdir = subdirname.strip('\"')
                                 sales_region = no_quotes_subdir.split("-")[0]
 
-                                csv_writer.writerow([sales_region,product_group,no_quotes_subdir,file,create_date.date(),modified_date.date(), file_size_bytes, round(file_size_kb,2), completion_flag, pdf_file])
+                                # encode path / file url
+                                encoded_path = pdf_file.replace(" ","%20")
+                                # hyperlink = f'=HYPERLINK("file://{encoded_path}","File Link")'
+                                hyperlink_path = f'file://{encoded_path}'
+
+
+                                csv_writer.writerow([sales_region,product_group,no_quotes_subdir,file,create_date.date(),modified_date.date(), file_size_bytes, round(file_size_kb,2), completion_flag, hyperlink_path])
 
                         else: 
                             # source file is a pdf and it is just copied to target directory

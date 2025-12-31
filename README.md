@@ -43,6 +43,17 @@ or
 other possible commands  
 uv run python <somthing.py>  
 
+### csv and spreadsheet notes  
+- sort link column z to a
+- create a column with 
+  =HYPERLINK(<pdf link column cell i.e. J10>,"<--link to file")
+- copy formula to all data rows in new column
+- save file as .odf 
+- remove duplicate header rows
+- Data, Sort..., <Sales Region, Product Group, Completion Level, Size(bytes)>
+- Pivot Table  <Row Fields : Sales Region, Product Group, Completion Level  Data Fields: Count - Completion Level>
+- Create a bar chart using highlighted pivot table, but not including total row
+- to focus on issue areas go back to file-tracker tab and use column auto sort headers to narrow down area of concern
 
 
     
