@@ -5,6 +5,7 @@ conversion.log
 *.xlsx
 *.ods
 *.xls 
+reports/
 
 .DS_Store
 
