@@ -54,6 +54,7 @@ uv run python <somthing.py>
 - Pivot Table  <Row Fields : Sales Region, Product Group, Completion Level  Data Fields: Count - Completion Level>
 - Create a bar chart using highlighted pivot table, but not including total row
 - to focus on issue areas go back to file-tracker tab and use column auto sort headers to narrow down area of concern
+  - ex: Data, Sort... (Sort Criteria Keys all ascending)->  Sales Region, Product Group, Completion Level, Modified Date, Size (bytes)
 
 
     
